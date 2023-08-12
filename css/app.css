@@ -1,0 +1,33 @@
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    background-color: white;
+    opacity: 1;
+    background: linear-gradient(135deg, #ffebd655 25%, transparent 25%) -28px 0/ 56px 56px, linear-gradient(225deg, #ffebd6 25%, transparent 25%) -28px 0/ 56px 56px, linear-gradient(315deg, #ffebd655 25%, transparent 25%) 0px 0/ 56px 56px, linear-gradient(45deg, #ffebd6 25%, #fffae8 25%) 0px 0/ 56px 56px;
+
+}
+.form {
+    max-width: 400px;
+    margin: auto;
+}
+.table {
+    background-color: aqua;
+    max-width: 90%;
+    margin: auto;
+    padding: 10px;
+}
+section {
+    margin: auto;
+}
+div tr, table tr {
+    display: flex;
+    justify-content: space-between;
+}
+td {
+    padding: 5px;
+}
+.compte {
+    border: 1px solid black;
+    padding: 5px;
+}
