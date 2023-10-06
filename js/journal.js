@@ -12,25 +12,49 @@ class Journal extends React.Component {
         this.addCompteDebitMoins = this.addCompteDebitMoins.bind(this);
         this.addCompteCreditPlus = this.addCompteCreditPlus.bind(this);
         this.addCompteCreditMoins = this.addCompteCreditMoins.bind(this);
+        this.getGrandLivre = this.getGrandLivre.bind(this);
+    }
+
+    getGrandLivre() {
+        
+        ReactDOM.render(<GrandLivre operations={this.state.operations} />, document.getElementById("grandlivre"));
     }
 
     addOperation() {
+        let date = document.getElementById("date").value;
+        if (!date) {
+            console.log(date);
+            return;
+        }
         let debit = [];
+        let compte, montant;
         for (let i = 0; i <= this.state.emploi; i++) {
+            compte = parseInt(document.getElementById("emploi"+i).value.split(" ")[0]);
+            montant = parseFloat(document.getElementById("debit"+i).value);
             debit.push({
-                compte: document.getElementById("emploi"+i).value.split(" ")[0],
-                montant: document.getElementById("debit"+i).value
+                compte: compte,
+                montant: montant
             });
+            if (!compte || !plan[compte] || !montant || montant<0) {
+                console.log(debit);
+                return;
+            }
         }
         let credit = [];
         for (let i = 0; i <= this.state.ressource; i++) {
+            compte = parseInt(document.getElementById("ressource"+i).value.split(" ")[0]);
+            montant = parseFloat(document.getElementById("credit"+i).value);
             credit.push({
-                compte: document.getElementById("ressource"+i).value.split(" ")[0],
-                montant: document.getElementById("credit"+i).value
+                compte: compte,
+                montant: montant
             });
+            if (!compte || !plan[compte] || !montant || montant<0) {
+                console.log(credit);
+                return;
+            }
         }
         const operation = new Operation({
-            date: document.getElementById("date").value,
+            date: date,
             debit: debit,
             credit: credit,
         });
@@ -40,7 +64,6 @@ class Journal extends React.Component {
     }
 
     addCompteDebitPlus(event) {
-        console.log(event);
         if (this.state.emploi<9)
         this.setState({
             emploi: this.state.emploi+1
@@ -136,6 +159,7 @@ class Journal extends React.Component {
                     </tr>
                     {operations}
                 </table>
+                <button className="button" onClick={this.getGrandLivre}>Clic</button>
             </section>
         );
     }
@@ -231,4 +255,5 @@ class Operation extends React.Component {
     }
 }
 
-ReactDOM.render(<Journal />, document.getElementById("root"));
+var journal = <Journal />;
+ReactDOM.render(journal, document.getElementById("root"));
