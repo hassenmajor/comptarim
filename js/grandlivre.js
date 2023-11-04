@@ -32,6 +32,7 @@ class GrandLivre extends React.Component {
 
         return (
             <section>
+                <h2>Grand Livre</h2>
                 {comptes}
             </section>
         );
@@ -45,71 +46,94 @@ class Compte extends React.Component {
         super(props);
         let debit = [];
         let credit = [];
+        let solde = 0;
         for (const operation of props.operations) {
-            for (const compte of operation.state.debit) {
-                if (compte.compte==props.compte)
+            for (const compte of operation.state.debit)
+                if (compte.compte==props.compte) {
+                    solde += compte.montant;
                     debit.push({
                         date: operation.state.date,
                         montant: compte.montant
                     });
-            }
-            for (const compte of operation.state.credit) {
-                if (compte.compte==props.compte)
+                }
+            for (const compte of operation.state.credit)
+                if (compte.compte==props.compte) {
+                    solde -= compte.montant;
                     credit.push({
                         date: operation.state.date,
                         montant: compte.montant
                     });
-            }
+                }
         }
         this.state = {
             compte: props.compte,
             debit: debit,
-            credit: credit
+            credit: credit,
+            solde, solde
         };
     }
 
     render() {
-        let debits = this.state.debit.map( function({date, montant}) {
+        let dateDebits = this.state.debit.map( function({date, montant}) {
             return (
-            <div>{date.toLocaleString(
-                        "fr-FR", 
-                        {year:'numeric',month:'numeric',day:'numeric'}
-                        )+" "+montant}
-            </div> );
-        } );
-        
-        let credits = this.state.credit.map( function({date, montant}) {
-            return (
-            <div>{montant+" "+date.toLocaleString(
+            <div>
+                {date.toLocaleString(
                         "fr-FR", 
                         {year:'numeric',month:'numeric',day:'numeric'}
                         )}
             </div> );
         } );
+        let debits = this.state.debit.map( function({date, montant}) {
+            return (
+            <div>
+                {montant}
+            </div> );
+        } );
+        
+        let dateCredits = this.state.credit.map( function({date, montant}) {
+            return (
+            <div>
+                {date.toLocaleString(
+                        "fr-FR", 
+                        {year:'numeric',month:'numeric',day:'numeric'}
+                        )}
+            </div> );
+        } );
+        let credits = this.state.credit.map( function({date, montant}) {
+            return (
+            <div>
+                {montant}
+            </div> );
+        } );
 
         return (
-            <table border="1">
-                <tr>
-                    <td>{plan[this.state.compte]}</td>
-                </tr>
-                <tr>
-                    <th></th>
-                    <th>Débit</th>
-                    <th>{this.state.compte}</th>
-                    <th>Crédit</th>
-                    <th></th>
-                </tr>
-                <tr>
-                    <td>{debits}</td>
-                    <td>{credits}</td>
-                </tr>
-            </table>
+            <section className="compte">
+                <div className="titreCompte">{plan[this.state.compte]}</div>
+                <table>
+                    <tr>
+                        <td></td>
+                        <td>Débit</td>
+                        <td>{this.state.compte}</td>
+                        <td>Crédit</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>{dateDebits}</td>
+                        <td>{debits}</td>
+                        <td></td>
+                        <td>{credits}</td>
+                        <td>{dateCredits}</td>
+                    </tr>
+                    <tr>
+                        <td>{this.state.solde<=0?"Solde":""}</td>
+                        <td>{this.state.solde<=0?-this.state.solde:""}</td>
+                        <td></td>
+                        <td>{this.state.solde<=0?"":this.state.solde}</td>
+                        <td>{this.state.solde<=0?"":"Solde"}</td>
+                    </tr>
+                </table>
+            </section>
         );
     }
 
-}
-
-function glClicked() {
-
-    ReactDOM.render(<GrandLivre journal={journal} />, document.getElementById("grandlivre"));
 }

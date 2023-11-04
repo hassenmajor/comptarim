@@ -22,6 +22,7 @@ class Journal extends React.Component {
 
     addOperation() {
         let date = document.getElementById("date").value;
+        let balance = 0;
         if (!date) {
             console.log(date);
             return;
@@ -31,11 +32,12 @@ class Journal extends React.Component {
         for (let i = 0; i <= this.state.emploi; i++) {
             compte = parseInt(document.getElementById("emploi"+i).value.split(" ")[0]);
             montant = parseFloat(document.getElementById("debit"+i).value);
+            balance += montant;
             debit.push({
                 compte: compte,
                 montant: montant
             });
-            if (!compte || !plan[compte] || !montant || montant<0) {
+            if (!compte || !plan[compte] || !montant || montant<=0) {
                 console.log(debit);
                 return;
             }
@@ -44,11 +46,12 @@ class Journal extends React.Component {
         for (let i = 0; i <= this.state.ressource; i++) {
             compte = parseInt(document.getElementById("ressource"+i).value.split(" ")[0]);
             montant = parseFloat(document.getElementById("credit"+i).value);
+            balance -= montant;
             credit.push({
                 compte: compte,
                 montant: montant
             });
-            if (!compte || !plan[compte] || !montant || montant<0) {
+            if (!compte || !plan[compte] || !montant || montant<=0) {
                 console.log(credit);
                 return;
             }
@@ -58,6 +61,10 @@ class Journal extends React.Component {
             debit: debit,
             credit: credit,
         });
+        if (balance != 0) {
+            alert("Les débits et les crédits sont inégaux.")
+            return;
+        }
         this.setState({
             operations: [...this.state.operations, operation]
         })
@@ -102,7 +109,7 @@ class Journal extends React.Component {
                     <input type="date" id="date" name="date" className="input"/>
                     <br/>
                     <div style={{display: "flex"}}>
-                        <div style={{flex: 2}}>
+                        <div style={{flex: 3}}>
                         <label htmlFor="emploi0" className="label">Compte débité</label>
                         <input type="text" list="listComptes" id="emploi0" name="emploi0" className="input"/>
                         </div>
@@ -118,7 +125,7 @@ class Journal extends React.Component {
                     </div>
                     <br/>
                     <div style={{display: "flex"}}>
-                        <div style={{flex: 2}}>
+                        <div style={{flex: 3}}>
                         <label htmlFor="ressource0" className="label">Compte crédité</label>
                         <input type="text" list="listComptes" id="ressource0" name="ressource0" className="input"/>
                         </div>
@@ -137,7 +144,7 @@ class Journal extends React.Component {
 				    <button onClick={this.addOperation} className="success button">Ajouter</button>
                     </div>
                 </div>
-                <h1>Journal</h1>
+                <h2>Journal</h2>
                 <table className="table">
                     <tr style={{
                         border: "solid 1px black"
@@ -159,7 +166,13 @@ class Journal extends React.Component {
                     </tr>
                     {operations}
                 </table>
-                <button className="button" onClick={this.getGrandLivre}>Clic</button>
+                <button className="button" 
+                        style={{
+                            margin: "10px"
+                        }} 
+                        onClick={this.getGrandLivre}>
+                    Afficher le Grand Livre
+                </button>
             </section>
         );
     }
@@ -184,7 +197,7 @@ function autreComptes(key, is) {
 }
 function autreCompte(key, is) {
     return (<div style={{display: "flex"}} key={key}>
-        <div style={{flex: 2}}>
+        <div style={{flex: 3}}>
         <input type="text" list="listComptes" id={(is?"emploi":"ressource")+key} name={(is?"emploi":"ressource")+key} className="input"/>
         </div>
         <div style={{flex: 1}}>
@@ -256,4 +269,4 @@ class Operation extends React.Component {
 }
 
 var journal = <Journal />;
-ReactDOM.render(journal, document.getElementById("root"));
+ReactDOM.render(journal, document.getElementById("journal"));
